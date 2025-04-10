@@ -9,6 +9,7 @@ function App() {
   const [pdfData, setPdfData] = useState(null);
   
   const handleFileUploaded = (fileData) => {
+    console.log('File uploaded:', fileData);
     setPdfData(fileData);
   };
   

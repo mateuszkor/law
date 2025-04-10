@@ -63,12 +63,13 @@ const FileUpload = ({ onFileUploaded }) => {
 
     try {
       // Upload to server
-      const response = await axios.post('http://localhost:5000/upload', formData, {
+      const response = await axios.post('http://localhost:5001/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       });
 
+      console.log('Upload response:', response.data);
       setStatus('Upload successful!');
       setIsUploading(false);
 
@@ -78,11 +79,11 @@ const FileUpload = ({ onFileUploaded }) => {
         name: response.data.fileName,
         size: response.data.fileSize,
         uploadDate: response.data.uploadDate,
-        url: `http://localhost:5000${response.data.fileUrl}`
+        url: `http://localhost:5001${response.data.fileUrl}`
       });
     } catch (error) {
       console.error('Error uploading file:', error);
-      setStatus('Error uploading file. Please try again.');
+      setStatus(`Error uploading file: ${error.message}`);
       setIsError(true);
       setIsUploading(false);
     }
