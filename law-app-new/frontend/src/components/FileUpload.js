@@ -78,7 +78,6 @@ const FileUpload = ({ onFileUploaded }) => {
         file: file,
         name: response.data.fileName,
         size: response.data.fileSize,
-        uploadDate: response.data.uploadDate,
         url: `http://localhost:5001${response.data.fileUrl}`
       });
     } catch (error) {

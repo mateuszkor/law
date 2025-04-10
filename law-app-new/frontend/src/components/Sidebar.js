@@ -58,11 +58,6 @@ const formatBytes = (bytes, decimals = 2) => {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 };
 
-const formatDate = (dateString) => {
-  const date = new Date(dateString);
-  return date.toLocaleString();
-};
-
 const Sidebar = ({ pdfInfo }) => {
   if (!pdfInfo) {
     return (
@@ -90,10 +85,6 @@ const Sidebar = ({ pdfInfo }) => {
         <InfoItem>
           <Label>Size</Label>
           <Value>{formatBytes(pdfInfo.size)}</Value>
-        </InfoItem>
-        <InfoItem>
-          <Label>Upload Date</Label>
-          <Value>{formatDate(pdfInfo.uploadDate)}</Value>
         </InfoItem>
       </SidebarSection>
       

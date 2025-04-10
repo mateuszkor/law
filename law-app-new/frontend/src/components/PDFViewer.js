@@ -5,6 +5,7 @@ import styled from 'styled-components';
 // Set up the worker for PDF.js
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.mjs`;
 
+// Styled container for the viewer
 const ViewerContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -13,26 +14,34 @@ const ViewerContainer = styled.div`
   height: 100%;
   overflow-y: auto; /* Enable scrolling */
   padding: 20px;
+  background-color: #f8f9fa; /* Light background for contrast */
 `;
 
+// Styled Document container
 const PDFDocument = styled(Document)`
   display: flex;
   flex-direction: column;
   align-items: center;
 `;
 
+// Styled Page component with enhanced visuals
 const PDFPage = styled(Page)`
-  margin-bottom: 0; /* Remove margin between pages */
+  margin-bottom: 16px; /* Space between pages */
   padding: 0; /* Remove padding */
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Add subtle shadow */
+  border-radius: 8px; /* Rounded corners for a modern look */
   
   canvas {
     display: block; /* Fix inline spacing issue */
-    max-width: 100%;
+    max-width: calc(100% - 40px); /* Responsive width with padding */
     height: auto !important;
-    margin-bottom: -4px; /* Fix blank space between pages */
+    margin: auto; /* Center canvas horizontally */
+    background-color: #ffffff; /* White background for the page */
+    border-radius: inherit; /* Match parent border radius */
   }
 `;
 
+// Loading message style
 const LoadingMessage = styled.div`
   display: flex;
   justify-content: center;
@@ -41,6 +50,7 @@ const LoadingMessage = styled.div`
   font-size: 18px;
 `;
 
+// Error message style
 const ErrorMessage = styled.div`
   color: red;
   text-align: center;
@@ -48,27 +58,24 @@ const ErrorMessage = styled.div`
 
 const PDFViewer = ({ pdfUrl, onDocumentLoad }) => {
   const [numPages, setNumPages] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Handle successful document load
   const onDocumentLoadSuccess = ({ numPages }) => {
-    setNumPages(numPages);
-    setLoading(false);
-
     if (onDocumentLoad) {
       onDocumentLoad({ numPages });
     }
+    setNumPages(numPages);
   };
 
+  // Handle document load error
   const onDocumentLoadError = (error) => {
     console.error('Error loading PDF:', error);
     setError('Error loading PDF document. Please try again.');
-    setLoading(false);
   };
 
   return (
     <ViewerContainer>
-      {loading && <LoadingMessage>Loading PDF...</LoadingMessage>}
       {error && <ErrorMessage>{error}</ErrorMessage>}
 
       <PDFDocument
@@ -82,8 +89,8 @@ const PDFViewer = ({ pdfUrl, onDocumentLoad }) => {
           <PDFPage
             key={`page_${index + 1}`}
             pageNumber={index + 1}
-            renderTextLayer={false} // Disable text layer to avoid formatting issues
-            renderAnnotationLayer={false} // Disable annotation layer if not needed
+            renderTextLayer={false} /* Disable text layer to avoid formatting issues */
+            renderAnnotationLayer={false} /* Disable annotation layer if not needed */
           />
         ))}
       </PDFDocument>

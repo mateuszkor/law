@@ -56,7 +56,6 @@ app.post('/upload', (req, res) => {
                 fileUrl: `/uploads/${pdfFile.name}`,
                 fileName: pdfFile.name,
                 fileSize: pdfFile.size,
-                uploadDate: new Date().toISOString()
             });
         });
     } catch (error) {
