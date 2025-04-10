@@ -141,7 +141,7 @@ const PDFViewer = ({ pdfUrl, onDocumentLoad }) => {
       <PDFDocument
         file={pdfUrl}
         onLoadSuccess={onDocumentLoadSuccess}
-        onLoadError={onDocumentLoadError}
+        onLoadError={(error) => setError('Error loading PDF: ' + error.message)}
         loading={<LoadingMessage>Loading PDF...</LoadingMessage>}
       >
         <PDFPage pageNumber={pageNumber} />

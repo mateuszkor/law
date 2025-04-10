@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import styled from 'styled-components';
+import axios from 'axios';
 
 const UploadContainer = styled.div`
   display: flex;
@@ -32,29 +33,58 @@ const UploadText = styled.p`
   color: var(--text-color);
 `;
 
-const ErrorMessage = styled.p`
-  color: red;
-  margin-top: 10px;
+const StatusText = styled.p`
+  margin-top: 20px;
+  font-size: 16px;
+  color: ${props => props.isError ? 'red' : 'green'};
 `;
 
 const FileUpload = ({ onFileUploaded }) => {
-  const [error, setError] = useState('');
+  const [status, setStatus] = useState('');
+  const [isError, setIsError] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
 
-  const onDrop = useCallback(acceptedFiles => {
-    setError('');
+  const onDrop = useCallback(async (acceptedFiles) => {
     const file = acceptedFiles[0];
     
-    if (file && file.type === 'application/pdf') {
-      // Process the file immediately when it's dropped
+    if (!file || file.type !== 'application/pdf') {
+      setStatus('Please upload a PDF file');
+      setIsError(true);
+      return;
+    }
+
+    setIsUploading(true);
+    setStatus('Uploading...');
+    setIsError(false);
+
+    // Create form data
+    const formData = new FormData();
+    formData.append('pdfFile', file);
+
+    try {
+      // Upload to server
+      const response = await axios.post('http://localhost:5000/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      setStatus('Upload successful!');
+      setIsUploading(false);
+
+      // Pass the file data to parent component
       onFileUploaded({
         file: file,
-        name: file.name,
-        size: file.size,
-        uploadDate: new Date().toISOString(),
-        url: URL.createObjectURL(file)
+        name: response.data.fileName,
+        size: response.data.fileSize,
+        uploadDate: response.data.uploadDate,
+        url: `http://localhost:5000${response.data.fileUrl}`
       });
-    } else {
-      setError('Please upload a PDF file');
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      setStatus('Error uploading file. Please try again.');
+      setIsError(true);
+      setIsUploading(false);
     }
   }, [onFileUploaded]);
 
@@ -64,7 +94,8 @@ const FileUpload = ({ onFileUploaded }) => {
       'application/pdf': ['.pdf']
     },
     maxFiles: 1,
-    multiple: false
+    multiple: false,
+    disabled: isUploading
   });
 
   return (
@@ -74,11 +105,13 @@ const FileUpload = ({ onFileUploaded }) => {
         <UploadText>
           {isDragActive
             ? 'Drop the PDF file here...'
-            : 'Drag and drop a PDF file here, or click to select a file'}
+            : isUploading 
+              ? 'Uploading...'
+              : 'Drag and drop a PDF file here, or click to select a file'}
         </UploadText>
       </DropzoneArea>
       
-      {error && <ErrorMessage>{error}</ErrorMessage>}
+      {status && <StatusText isError={isError}>{status}</StatusText>}
     </UploadContainer>
   );
 };
