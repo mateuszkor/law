@@ -46,6 +46,29 @@ const Value = styled.span`
   word-break: break-word;
 `;
 
+const ZoomControls = styled.div`
+  display: flex;
+  flex-direction: column; /* Stack buttons vertically */
+`;
+
+const ZoomButton = styled.button`
+  margin-bottom: 10px; /* Space between buttons */
+  padding: 8px;
+  border: none;
+  background-color:#800020;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #800020;
+  }
+
+  &:last-child {
+    margin-bottom: 0; /* Remove margin for last button */
+  }
+`;
+
 const formatBytes = (bytes, decimals = 2) => {
   if (bytes === 0) return '0 Bytes';
   
@@ -58,45 +81,52 @@ const formatBytes = (bytes, decimals = 2) => {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 };
 
-const Sidebar = ({ pdfInfo }) => {
-  if (!pdfInfo) {
+const Sidebar = ({ pdfInfo, onZoomIn, onZoomOut }) => {
+  
     return (
       <SidebarWrapper>
         <SidebarHeader>
           <SidebarTitle>PDF Information</SidebarTitle>
         </SidebarHeader>
-        <p>Upload a PDF to view its information</p>
+        
+        {pdfInfo ? (
+          <>
+            <SidebarSection>
+              <SidebarSectionTitle>File Details</SidebarSectionTitle>
+              <InfoItem>
+                <Label>Filename</Label>
+                <Value>{pdfInfo.name}</Value>
+              </InfoItem>
+              <InfoItem>
+                <Label>Size</Label>
+                <Value>{formatBytes(pdfInfo.size)}</Value>
+              </InfoItem>
+            </SidebarSection>
+            
+            <SidebarSection>
+              <SidebarSectionTitle>Document Properties</SidebarSectionTitle>
+              <InfoItem>
+                <Label>Pages</Label>
+                <Value>{pdfInfo.numPages || 'Unknown'}</Value>
+              </InfoItem>
+            </SidebarSection>
+
+            {/* Zoom Controls Section */}
+            <SidebarSection>
+              <SidebarSectionTitle>Zoom Controls</SidebarSectionTitle>
+              <ZoomControls>
+                <ZoomButton onClick={onZoomIn}>Zoom In</ZoomButton>
+                <ZoomButton onClick={onZoomOut}>Zoom Out</ZoomButton>
+              </ZoomControls>
+            </SidebarSection>
+
+          </>
+        ) : (
+          <p>Upload a PDF to view its information</p>
+        )}
       </SidebarWrapper>
     );
-  }
-
-  return (
-    <SidebarWrapper>
-      <SidebarHeader>
-        <SidebarTitle>PDF Information</SidebarTitle>
-      </SidebarHeader>
-      
-      <SidebarSection>
-        <SidebarSectionTitle>File Details</SidebarSectionTitle>
-        <InfoItem>
-          <Label>Filename</Label>
-          <Value>{pdfInfo.name}</Value>
-        </InfoItem>
-        <InfoItem>
-          <Label>Size</Label>
-          <Value>{formatBytes(pdfInfo.size)}</Value>
-        </InfoItem>
-      </SidebarSection>
-      
-      <SidebarSection>
-        <SidebarSectionTitle>Document Properties</SidebarSectionTitle>
-        <InfoItem>
-          <Label>Pages</Label>
-          <Value>{pdfInfo.numPages || 'Unknown'}</Value>
-        </InfoItem>
-      </SidebarSection>
-    </SidebarWrapper>
-  );
 };
 
 export default Sidebar;
+

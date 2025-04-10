@@ -14,7 +14,7 @@ const MainContent = styled.main`
 `;
 
 const SidebarContainer = styled.aside`
-  width: 300px;
+  width: 400px;
   background-color: var(--secondary-color);
   padding: 20px;
   border-left: 1px solid var(--light-gray);

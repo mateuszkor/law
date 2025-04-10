@@ -17,14 +17,12 @@ const ViewerContainer = styled.div`
   background-color: #f8f9fa; /* Light background for contrast */
 `;
 
-// Styled Document container
 const PDFDocument = styled(Document)`
   display: flex;
   flex-direction: column;
   align-items: center;
 `;
 
-// Styled Page component with enhanced visuals
 const PDFPage = styled(Page)`
   margin-bottom: 16px; /* Space between pages */
   padding: 0; /* Remove padding */
@@ -56,45 +54,45 @@ const ErrorMessage = styled.div`
   text-align: center;
 `;
 
-const PDFViewer = ({ pdfUrl, onDocumentLoad }) => {
+const PDFViewer = ({ pdfUrl, onDocumentLoad, scale }) => {
   const [numPages, setNumPages] = useState(null);
   const [error, setError] = useState(null);
 
-  // Handle successful document load
   const onDocumentLoadSuccess = ({ numPages }) => {
-    if (onDocumentLoad) {
-      onDocumentLoad({ numPages });
-    }
-    setNumPages(numPages);
+      if (onDocumentLoad) {
+          onDocumentLoad({ numPages });
+      }
+      setNumPages(numPages);
+      setError(null);
   };
 
-  // Handle document load error
   const onDocumentLoadError = (error) => {
-    console.error('Error loading PDF:', error);
-    setError('Error loading PDF document. Please try again.');
+      console.error('Error loading PDF:', error);
+      setError('Error loading PDF document. Please try again.');
   };
 
   return (
-    <ViewerContainer>
-      {error && <ErrorMessage>{error}</ErrorMessage>}
+      <ViewerContainer>
+          {error && <ErrorMessage>{error}</ErrorMessage>}
 
-      <PDFDocument
-        file={pdfUrl}
-        onLoadSuccess={onDocumentLoadSuccess}
-        onLoadError={onDocumentLoadError}
-        loading={<LoadingMessage>Loading PDF...</LoadingMessage>}
-      >
-        {/* Render all pages continuously */}
-        {Array.from(new Array(numPages), (el, index) => (
-          <PDFPage
-            key={`page_${index + 1}`}
-            pageNumber={index + 1}
-            renderTextLayer={false} /* Disable text layer to avoid formatting issues */
-            renderAnnotationLayer={false} /* Disable annotation layer if not needed */
-          />
-        ))}
-      </PDFDocument>
-    </ViewerContainer>
+          <PDFDocument
+              file={pdfUrl}
+              onLoadSuccess={onDocumentLoadSuccess}
+              onLoadError={onDocumentLoadError}
+              loading={<LoadingMessage>Loading PDF...</LoadingMessage>}
+          >
+              {/* Render all pages continuously */}
+              {Array.from(new Array(numPages), (el, index) => (
+                  <PDFPage
+                      key={`page_${index + 1}`}
+                      pageNumber={index + 1}
+                      scale={scale} /* Apply current zoom level */
+                      renderTextLayer={false}
+                      renderAnnotationLayer={false}
+                  />
+              ))}
+          </PDFDocument>
+      </ViewerContainer>
   );
 };
 
