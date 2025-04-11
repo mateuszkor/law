@@ -86,7 +86,7 @@ const Sidebar = ({ pdfInfo, onZoomIn, onZoomOut }) => {
     return (
       <SidebarWrapper>
         <SidebarHeader>
-          <SidebarTitle>PDF Information</SidebarTitle>
+          <SidebarTitle>PDF Info</SidebarTitle>
         </SidebarHeader>
         
         {pdfInfo ? (
@@ -101,10 +101,6 @@ const Sidebar = ({ pdfInfo, onZoomIn, onZoomOut }) => {
                 <Label>Size</Label>
                 <Value>{formatBytes(pdfInfo.size)}</Value>
               </InfoItem>
-            </SidebarSection>
-            
-            <SidebarSection>
-              <SidebarSectionTitle>Document Properties</SidebarSectionTitle>
               <InfoItem>
                 <Label>Pages</Label>
                 <Value>{pdfInfo.numPages || 'Unknown'}</Value>
@@ -113,7 +109,7 @@ const Sidebar = ({ pdfInfo, onZoomIn, onZoomOut }) => {
 
             {/* Zoom Controls Section */}
             <SidebarSection>
-              <SidebarSectionTitle>Zoom Controls</SidebarSectionTitle>
+              <SidebarSectionTitle>Controls</SidebarSectionTitle>
               <ZoomControls>
                 <ZoomButton onClick={onZoomIn}>Zoom In</ZoomButton>
                 <ZoomButton onClick={onZoomOut}>Zoom Out</ZoomButton>
