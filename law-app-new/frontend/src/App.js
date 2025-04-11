@@ -4,6 +4,7 @@ import FileUpload from './components/FileUpload';
 import PDFViewer from './components/PDFViewer';
 import Sidebar from './components/Sidebar';
 import GlobalStyles from './styles/GlobalStyles';
+import ChatSidebar from './components/Chat';
 
 function App() {
     const [pdfData, setPdfData] = useState(null);
@@ -35,13 +36,14 @@ function App() {
         <>
             <GlobalStyles />
             <Layout
-                sidebar={
+                leftSidebar={
                     <Sidebar
                         pdfInfo={pdfData}
                         onZoomIn={zoomIn} // Pass zoom in function
                         onZoomOut={zoomOut} // Pass zoom out function
                     />
                 }
+                rightSidebar={<ChatSidebar />} // Chat Sidebar on the right
             >
                 {pdfData ? (
                     <PDFViewer

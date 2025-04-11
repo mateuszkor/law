@@ -16,6 +16,53 @@ if (!fs.existsSync(uploadsDir)) {
 // Enable CORS
 app.use(cors());
 
+app.use(express.json());
+
+const { spawn } = require('child_process');
+
+// Add this endpoint (before app.listen)
+app.post('/process-question', (req, res) => {
+    try {
+        const { question } = req.body;
+
+        if (!question || question.trim() === '') {
+            return res.status(400).json({ error: 'Question cannot be empty.' });
+        }
+
+        // Spawn Python process
+        const pythonProcess = spawn('python3', ['capitalize.py']);
+        
+        let result = '';
+        let error = '';
+
+        // Send question to Python script
+        pythonProcess.stdin.write(question);
+        pythonProcess.stdin.end();
+
+        // Collect results
+        pythonProcess.stdout.on('data', (data) => {
+            result += data.toString();
+        });
+
+        pythonProcess.stderr.on('data', (data) => {
+            error += data.toString();
+        });
+
+        pythonProcess.on('close', (code) => {
+            if (code !== 0 || error) {
+                console.error('Python error:', error);
+                return res.status(500).json({ error: 'Processing failed' });
+            }
+            res.json({ success: true, answer: result });
+        });
+
+    } catch (error) {
+        console.error('Error handling question:', error);
+        res.status(500).json({ error: 'Server error occurred.' });
+    }
+});
+
+
 // Configure file upload middleware
 app.use(fileUpload({
     createParentPath: true,

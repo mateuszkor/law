@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import axios from 'axios';
 
+// Styled components for clean layout
 const ChatWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -15,7 +17,7 @@ const InputBox = styled.textarea`
   height: 100px;
   padding: 10px;
   font-size: 16px;
-  border: 1px solid var(--primary-color); /* Use application main color */
+  border: 1px solid var(--primary-color); /* Application's main color */
   border-radius: 8px;
   resize: none;
 
@@ -28,11 +30,11 @@ const InputBox = styled.textarea`
 
 const AnswerBox = styled.div`
   width: 100%;
-  min-height: 300px; /* Increased height for larger output box */
+  min-height: 300px; /* Larger output box */
   margin-top: 20px;
   padding: 15px;
   font-size: 16px;
-  border: 2px solid var(--primary-color); /* Use application main color */
+  border: 2px solid var(--primary-color); /* Application's main color */
   border-radius: 8px;
   background-color: #ffffff; /* White background */
 `;
@@ -42,7 +44,7 @@ const SubmitButton = styled.button`
   padding: 10px;
   font-size: 16px;
   color: white;
-  background-color: var(--primary-color); /* Use application main color */
+  background-color: var(--primary-color); /* Application's main color */
   border: none;
   border-radius: 4px;
 
@@ -51,31 +53,45 @@ const SubmitButton = styled.button`
     cursor: pointer;
     transition: background-color ease-in-out .3s ;
 `;
+
+
 const Chat = () => {
     const [question, setQuestion] = useState('');
     const [answer, setAnswer] = useState('Your answer will appear here.');
+    const [loading, setLoading] = useState(false);
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (question.trim() === '') return;
-
-        // Simulate generating an answer (replace with actual logic later)
-        setAnswer(`You asked: "${question}". This is a placeholder answer.`);
-        setQuestion(''); // Clear the input box
+    
+        try {
+            setLoading(true);
+            const response = await axios.post('http://localhost:5001/process-question', {
+                question: question
+            });
+    
+            setAnswer(response.data.answer);
+            setQuestion('');
+        } catch (error) {
+            console.error('Error sending question:', error);
+            setAnswer('Error processing question. Please try again.');
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
         <ChatWrapper>
-            {/* Input Box */}
             <InputBox
                 placeholder="Type your question here..."
                 value={question}
                 onChange={(e) => setQuestion(e.target.value)}
+                disabled={loading}
             />
 
-            {/* Submit Button */}
-            <SubmitButton onClick={handleSubmit}>Submit</SubmitButton>
+            <SubmitButton onClick={handleSubmit} disabled={loading}>
+                {loading ? 'Sending...' : 'Submit'}
+            </SubmitButton>
 
-            {/* Answer Box */}
             <AnswerBox>
                 {answer}
             </AnswerBox>
@@ -84,4 +100,3 @@ const Chat = () => {
 };
 
 export default Chat;
-
