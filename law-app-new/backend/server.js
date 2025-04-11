@@ -30,7 +30,7 @@ app.post('/process-question', (req, res) => {
         }
 
         // Spawn Python process
-        const pythonProcess = spawn('python3', ['capitalize.py']);
+        const pythonProcess = spawn('python3', ['prawo.py']);
         
         let result = '';
         let error = '';

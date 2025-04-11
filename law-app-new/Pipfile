@@ -10,6 +10,7 @@ openai = "*"
 pytesseract = "*"
 pdf2image = "*"
 requests = "*"
+python-dotenv = "*"
 
 [dev-packages]
 

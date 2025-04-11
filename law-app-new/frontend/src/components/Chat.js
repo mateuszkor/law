@@ -30,13 +30,16 @@ const InputBox = styled.textarea`
 
 const AnswerBox = styled.div`
   width: 100%;
-  min-height: 300px; /* Larger output box */
+  max-height: 400px; /* You can adjust this value */
   margin-top: 20px;
   padding: 15px;
   font-size: 16px;
-  border: 2px solid var(--primary-color); /* Application's main color */
+  border: 2px solid var(--primary-color);
   border-radius: 8px;
-  background-color: #ffffff; /* White background */
+  background-color: #ffffff;
+  overflow: auto; /* Makes it scrollable if content is too long */
+  white-space: pre-wrap; /* Preserves line breaks and spacing */
+  word-wrap: break-word; /* Break long words */
 `;
 
 const SubmitButton = styled.button`
@@ -89,7 +92,7 @@ const Chat = () => {
             />
 
             <SubmitButton onClick={handleSubmit} disabled={loading}>
-                {loading ? 'Sending...' : 'Submit'}
+                {loading ? 'Thinking...' : 'Submit'}
             </SubmitButton>
 
             <AnswerBox>

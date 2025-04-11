@@ -23,7 +23,7 @@ const MainContent = styled.main`
 `;
 
 const RightSidebar = styled.aside`
-  width: 400px;
+  width: 500px;
   background-color: var(--secondary-color);
   padding: 20px;
   border-left: 1px solid var(--light-gray);
